@@ -12,25 +12,28 @@ const Game = function () {
 };
 
 Game.prototype.bindEvents = function () {
-  PubSub.subscribe('Deck:deck-loaded', () => {
-    this.deck.getHandSizes();
-    // getHandSizes publishes Deck:hand-sizes
-  });
-
   PubSub.subscribe('StartButton:start-game', () => {
-    this.startMatch();
+    setTimeout(() => {
+      this.deck.getHandSizes();
+      PubSub.publish('Game:current-player-turn', this.currentPlayer);
+      this.startMatch();
+    }, 500)
+
     // startMatch pops 2 new cards into play
   });
 
   PubSub.subscribe('CardView:category-clicked', (event) => {
     if (this.allowPlayerToChoose === true) {
-    const formattedKey = this.keyFormatter(event.detail);
-    console.log(this.cardsInPlay);
-    this.winner = this.compareCards(this.cardsInPlay, formattedKey);
-    PubSub.publish('Game:winner-determined', this.winner);
-    PubSub.publish("Game:reveal-both-cards", {});
-    this.allowPlayerToChoose = false;
-  }
+      const formattedKey = this.keyFormatter(event.detail);
+      this.winner = this.compareCards(this.cardsInPlay, formattedKey);
+      this.allowPlayerToChoose = false;
+      PubSub.publish('Game:message', `Player 1 has selected ${event.detail}`);
+      setTimeout(() => {
+        PubSub.publish('Game:message', ``);
+        PubSub.publish('Game:winner-determined', [this.winner, event.detail]);
+        PubSub.publish("Game:reveal-both-cards", {});
+      }, 2000)
+    }
   });
 
   PubSub.subscribe('NextMatchButton:start-next-match', () => {
@@ -45,11 +48,9 @@ Game.prototype.bindEvents = function () {
 
   PubSub.subscribe('Game:current-player-turn', () => {
     if (this.currentPlayer === 2) {
-      PubSub.publish('Game:message', 'Player 2 thinking...');
       setTimeout(() => {
         this.computerTurn();
       }, 1500)
-
     }
   })
 };
@@ -63,25 +64,40 @@ Game.prototype.startMatch = function () {
 };
 
 Game.prototype.keyFormatter = function (label) {
- const keys = {
-   "Distance": "pl_orbsmax",
-   "Orbit Period": "pl_orbper",
-   "Radius": "pl_radj",
-   "Mass": "pl_bmassj",
-   "Planets": "pl_pnum",
- }
- return keys[label];
+  const keys = {
+    "Distance": "pl_orbsmax",
+    "Orbit Period": "pl_orbper",
+    "Radius": "pl_radj",
+    "Mass": "pl_bmassj",
+    "Planets": "pl_pnum",
+  }
+  return keys[label];
+};
+
+Game.prototype.reverseKeyFormatter = function (label) {
+  const keys = {
+    "pl_orbsmax": "Distance",
+    "pl_orbper": "Orbit Period",
+    "pl_radj": "Radius",
+    "pl_bmassj": "Mass",
+    "pl_pnum": "Planets",
+  }
+  return keys[label];
 };
 
 Game.prototype.computerTurn = function () {
-  // debugger;
+  PubSub.publish('Game:message', "Player 2 selecting...");
   const categories = this.getCategories(this.cardsInPlay[0]);
   const randomCategory = this.randomCategory(categories);
   this.winner = this.compareCards(this.cardsInPlay, randomCategory);
-  setTimeout(function () {
+  setTimeout(() => {
+    PubSub.publish('Game:message', `Player 2 has selected ${this.reverseKeyFormatter(randomCategory)}`);
+  }, 2000)
+  setTimeout(() => {
+    PubSub.publish('Game:winner-determined', [this.winner, this.reverseKeyFormatter(randomCategory)]);
     PubSub.publish("Game:reveal-both-cards", {});
-  }, 1500);
-  PubSub.publish('Game:winner-determined', this.winner);
+    PubSub.publish('Game:message', "");
+  }, 4000);
 };
 
 Game.prototype.getCategories = function (object) {
@@ -90,7 +106,10 @@ Game.prototype.getCategories = function (object) {
 }; //pass in this.hands[0][0]
 
 Game.prototype.randomCategory = function (categories) {
-  const randomNumber = this.getRandomNumber(categories.length);
+  let randomNumber = null;
+  while (categories[randomNumber] === 'pl_name' || categories[randomNumber] === 'st_teff' || categories[randomNumber] === undefined) {
+    randomNumber = this.getRandomNumber(categories.length);
+  }
   return categories[randomNumber];
 };
 
@@ -99,7 +118,6 @@ Game.prototype.getRandomNumber = function (maximum) {
 };
 
 Game.prototype.compareCards = function (cards, category) {
-  console.log(category);
   const winnerCard = []
   for (card of cards) {
     if (winnerCard.length === 0) {

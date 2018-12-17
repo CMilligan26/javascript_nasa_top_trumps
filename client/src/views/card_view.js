@@ -21,12 +21,9 @@ CardView.prototype.renderCardDetails = function (card, playerNumber) {
   };
   let frameString=`000${frame}`.slice(-4);
   const url = `./images/${frameString}.png`;
-  console.log(url);
   const imageDiv = this.createCustomElement('img', 'src', url);
 
   image.appendChild(imageDiv);
-
-  console.log(card.st_teff);
 
   const playing_fields = {
     "Name": card.pl_name,
@@ -46,7 +43,6 @@ CardView.prototype.renderCardDetails = function (card, playerNumber) {
     if (labelDiv.textContent !== "Name" && labelDiv.textContent !== "Star Temp") {
     labelDiv.addEventListener('click', (event) => {
       PubSub.publish('CardView:category-clicked', event.target.textContent)
-      console.log('eventValue', event.target);
     })
   }
 }

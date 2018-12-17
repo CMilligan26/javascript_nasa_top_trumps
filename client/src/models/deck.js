@@ -55,7 +55,6 @@ Deck.prototype.putCardsAtBackOfHands = function (winner) {
     this.hands[1].unshift(this.cardsSentToGame[0]);
     this.hands[1].unshift(this.cardsSentToGame[1]);
   }
-  console.log(this.hands);
 };
 
 module.exports = Deck;

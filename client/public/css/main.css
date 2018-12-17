@@ -137,6 +137,7 @@ h1 {
   font-size: 6rem;
   color: white;
   text-shadow: 0px 0px 28px cyan;
+  margin: 0 1em 0 1em;
 }
 
 input[type=button] {
@@ -147,12 +148,11 @@ input[type=button] {
 }
 
 #card-grid-container {
-  flex: 6;
+  flex: 5;
   display: flex;
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
-
 }
 
 input[type=button] {
@@ -176,6 +176,7 @@ input[type=button]:hover {
   border: 1px solid black;
   border-radius: 1rem;
   box-shadow: 0px 0px 24px rgba(255,255,255,.8);
+  -webkit-animation: fadein 1s;
 }
 
 .planet-image {
@@ -267,4 +268,9 @@ as well as the value div next to it */
 .stats-row-label:hover ~ .stats-row-value {
   background-color: red;
   cursor: grab;
+}
+
+@-webkit-keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
