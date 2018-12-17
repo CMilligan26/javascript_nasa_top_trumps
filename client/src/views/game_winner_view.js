@@ -10,6 +10,11 @@ GameWinnerView.prototype.bindEvents = function () {
     this.renderModal(event.detail);
   });
 
+  PubSub.subscribe('Game:current-player-turn', (event) => {
+    document.querySelector('#game-container').style.visibility = 'visible';
+    this.element.style.visibility = 'hidden';
+  });
+
   // this.element.addEventListener("click", (event) => {
   //   this.element.style.visibility = 'hidden';
   // })
@@ -17,6 +22,7 @@ GameWinnerView.prototype.bindEvents = function () {
 }
 
 GameWinnerView.prototype.renderModal = function (winnerPhrase) {
+  document.querySelector('#game-container').style.visibility = 'hidden';
   this.element.innerHTML = '';
   this.element.style.visibility = 'visible';
 

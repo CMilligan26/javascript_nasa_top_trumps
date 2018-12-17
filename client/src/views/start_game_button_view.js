@@ -6,9 +6,13 @@ const StartGameButtonView = function (element) {
 
 StartGameButtonView.prototype.bindEvents = function () {
   this.element.addEventListener("click", (event) => {
-    this.element.hidden = 'true'
+    this.element.hidden = true;
     PubSub.publish("StartButton:start-game",{});
   });
+
+  PubSub.subscribe('Game:game-winner-determined', () => {
+    this.element.hidden = false;
+  })
 };
 
 module.exports = StartGameButtonView;

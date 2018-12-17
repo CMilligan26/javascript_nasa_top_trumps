@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const game = new Game();
   game.bindEvents();
-  game.populateDeck();
 
   /* Card deck and scores */
 

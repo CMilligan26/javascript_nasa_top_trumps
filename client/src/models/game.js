@@ -4,21 +4,22 @@ const Deck = require('./deck.js');
 
 
 const Game = function () {
-  this.currentPlayer = 1;
-  this.deck = new Deck();
-  this.cardsInPlay = null;
-  this.winner = null;
-  this.allowPlayerToChoose = true;
+
 };
 
 Game.prototype.bindEvents = function () {
   PubSub.subscribe('StartButton:start-game', () => {
+    this.currentPlayer = 1;
+    this.deck = new Deck();
+    this.cardsInPlay = null;
+    this.winner = null;
+    this.allowPlayerToChoose = true;
+    this.populateDeck();
     setTimeout(() => {
       this.deck.getHandSizes();
       PubSub.publish('Game:current-player-turn', this.currentPlayer);
       this.startMatch();
     }, 500)
-
     // startMatch pops 2 new cards into play
   });
 
@@ -39,11 +40,14 @@ Game.prototype.bindEvents = function () {
   PubSub.subscribe('NextMatchButton:start-next-match', () => {
     this.deck.putCardsAtBackOfHands(this.winner);
     this.deck.getHandSizes();
-    this.checkWinner();
-    this.startMatch();
-    // startMatch pops 2 new cards into play
-    this.switchTurns();
-    // switchTurns publishes Game:current-player-turn
+
+    if (this.checkWinner() !== "Game Over")
+    {
+      this.startMatch();
+      // startMatch pops 2 new cards into play
+      this.switchTurns();
+      // switchTurns publishes Game:current-player-turn
+    }
   });
 
   PubSub.subscribe('Game:current-player-turn', () => {
@@ -136,14 +140,18 @@ Game.prototype.compareCards = function (cards, category) {
 
 
 Game.prototype.checkWinner = function () {
+  PubSub.publish('Game:message', '');
   if (this.deck.hands[0].length === 0 && this.deck.hands[1].length !== 0) {
     PubSub.publish('Game:game-winner-determined', 'Computer wins!');
+    return "Game Over"
   }
   else if (this.deck.hands[1].length === 0 && this.deck.hands[0].length !== 0) {
     PubSub.publish('Game:game-winner-determined', 'Player wins!');
+    return "Game Over"
   }
   else if (this.deck.hands[1].length === 0 && this.deck.hands[0].length === 0) {
     PubSub.publish('Game:game-winner-determined', 'Draw! What are the chances?! (astronomical!)');
+    return "Game Over"
   }
 };
 
