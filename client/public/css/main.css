@@ -12,7 +12,7 @@ html {
 
 body {
   position: relative;
-  width:90%;
+  width: 100%;
   margin: 0 auto;
   /*font-family: 'Orbitron', sans-serif;*/
   font-family: 'Coda', cursive;
@@ -22,6 +22,7 @@ body {
 
 #content {
   text-align: center;
+  height: 100vh;
 }
 
 .title-banner-image {
@@ -68,7 +69,7 @@ h1 {
  {
   visibility: hidden;
   position: absolute;
-  top: 50%;
+  top: 60%;
   left: 50%;
   width:512px;
   height:300px;
@@ -108,8 +109,9 @@ h1 {
 
 
 #winner-container {
+  display: block;
   position: absolute;
-  bottom: 160px;
+  bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 2rem;
@@ -119,7 +121,7 @@ h1 {
 #game-container {
   display: flex;
   flex-direction: row;
-  transform: scale(.6);
+  transform: scale(.45);
   transform-origin: top;
 }
 
@@ -128,6 +130,8 @@ h1 {
   display:flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  left: -9%;
 }
 
 .score {
@@ -153,6 +157,8 @@ input[type=button] {
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
+  position: relative;
+  left: -9%;
 }
 
 input[type=button] {
@@ -167,11 +173,13 @@ input[type=button]:hover {
 
 
 .player-card {
+  width: 60rem;
+  height: 50rem;
   flex: 1;
   display: flex;
   flex-direction: column;
   background-image: linear-gradient(0deg, orange 0%, green 100%);
-  margin: 0 2rem;
+  margin: 0 2rem 0 2rem;
   padding: 1rem 1rem 2rem 1rem;
   border: 1px solid black;
   border-radius: 1rem;

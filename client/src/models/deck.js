@@ -5,10 +5,11 @@ const Deck = function () {
   this.deck = null;
   this.hands = null;
   this.cardsSentToGame = null;
+  this.url = window.location.href;
 }
 
 Deck.prototype.getDeal = function () {
-  const request = new RequestHelper('http://localhost:3000/api/exoplanets');
+  const request = new RequestHelper(`${this.url}api/exoplanets`);
   request.get()
   .then((nPlanetData) =>{
     this.deck = nPlanetData;
