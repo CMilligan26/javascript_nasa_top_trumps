@@ -42,15 +42,25 @@ CardView.prototype.renderCardDetails = function (card, playerNumber) {
     if (playerNumber === 1) {
     if (labelDiv.textContent !== "Name" && labelDiv.textContent !== "Star Temp") {
     labelDiv.addEventListener('click', (event) => {
-      PubSub.publish('CardView:category-clicked', event.target.textContent)
+      PubSub.publish('CardView:category-clicked', event.target.textContent);
     })
   }
 }
     const valueDiv = this.createCustomElement('div','className','stats-row-value');
     valueDiv.textContent = playing_fields[key];
-    statDiv.appendChild(labelDiv);
+    if (labelDiv.textContent !== "Name") {
+      statDiv.appendChild(labelDiv);
+    };
     statDiv.appendChild(valueDiv);
+    if (labelDiv.textContent === "Name") {
+      valueDiv.classList.remove("stats-row-value");
+      statDiv.classList.remove("stats-row");
+      statDiv.className = "card-name";
+      playerCard.appendChild(statDiv);
+    }
+    else {
     stats.appendChild(statDiv);
+    };
   })
 
   playerCard.appendChild(image);
