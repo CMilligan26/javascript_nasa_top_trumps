@@ -12,19 +12,15 @@ GameWinnerView.prototype.bindEvents = function () {
 
   PubSub.subscribe('Game:current-player-turn', (event) => {
     document.querySelector('#game-container').style.visibility = 'visible';
-    this.element.style.visibility = 'hidden';
+    this.element.style.display = 'none';
   });
-
-  // this.element.addEventListener("click", (event) => {
-  //   this.element.style.visibility = 'hidden';
-  // })
 
 }
 
 GameWinnerView.prototype.renderModal = function (winnerPhrase) {
   document.querySelector('#game-container').style.visibility = 'hidden';
   this.element.innerHTML = '';
-  this.element.style.visibility = 'visible';
+  this.element.style.display = 'initial';
 
   const gameWinnerContent = document.createElement('div');
   gameWinnerContent.className = 'game-winner-content';
